@@ -1,0 +1,8 @@
+../Core/Src/main.c:20:5:main	3
+../Core/Src/main.c:52:6:SystemClock_Config	4
+../Core/Src/main.c:78:6:GPIO_Init	1
+../Core/Src/main.c:95:6:Write_Control_Word	1
+../Core/Src/main.c:108:6:Write_PortA	1
+../Core/Src/main.c:121:9:Read_PortA	1
+../Core/Src/main.c:144:9:Read_PortC	1
+../Core/Src/main.c:166:6:Delay_ms	2

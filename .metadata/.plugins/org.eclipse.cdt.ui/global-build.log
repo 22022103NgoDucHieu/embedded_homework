@@ -1,0 +1,45 @@
+23:16:09 **** Incremental Build of configuration Debug for project timer ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c:290: warning: "RCC_BASE" redefined
+  290 | #define RCC_BASE        0x40023800
+      | 
+In file included from ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:146,
+                 from ../Core/Src/main.c:287:
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:698: note: this is the location of the previous definition
+  698 | #define RCC_BASE              (AHB1PERIPH_BASE + 0x3800UL)
+      | 
+../Core/Src/main.c:291: warning: "GPIOA_BASE" redefined
+  291 | #define GPIOA_BASE      0x40020000
+      | 
+In file included from ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:146,
+                 from ../Core/Src/main.c:287:
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:691: note: this is the location of the previous definition
+  691 | #define GPIOA_BASE            (AHB1PERIPH_BASE + 0x0000UL)
+      | 
+../Core/Src/main.c:292: warning: "USART2_BASE" redefined
+  292 | #define USART2_BASE     0x40004400
+      | 
+In file included from ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:146,
+                 from ../Core/Src/main.c:287:
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:667: note: this is the location of the previous definition
+  667 | #define USART2_BASE           (APB1PERIPH_BASE + 0x4400UL)
+      | 
+arm-none-eabi-gcc -o "timer.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\nhapmonhethongnhung\lab\lab2_intro\timer\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="timer.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: timer.elf
+ 
+arm-none-eabi-size   timer.elf 
+arm-none-eabi-objdump -h -S  timer.elf  > "timer.list"
+   text	   data	    bss	    dec	    hex	filename
+   1188	     12	   1572	   2772	    ad4	timer.elf
+Finished building: default.size.stdout
+ 
+Finished building: timer.list
+ 
+23:16:56 **** Incremental Build of configuration Debug for project timer ****
+make -j12 all 
+arm-none-eabi-size   timer.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1188	     12	   1572	   2772	    ad4	timer.elf
+Finished building: default.size.stdout
+ 

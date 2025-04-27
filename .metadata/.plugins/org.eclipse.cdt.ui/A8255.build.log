@@ -1,0 +1,24 @@
+23:18:36 **** Incremental Build of configuration Debug for project A8255 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:41:21: warning: unused variable 'data' [-Wunused-variable]
+   41 |             uint8_t data = read_portA();
+      |                     ^~~~
+arm-none-eabi-gcc -o "A8255.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\nhapmonhethongnhung\lab\lab2_intro\A8255\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="A8255.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: A8255.elf
+ 
+arm-none-eabi-size   A8255.elf 
+arm-none-eabi-objdump -h -S  A8255.elf  > "A8255.list"
+arm-none-eabi-objcopy  -O ihex  A8255.elf  "A8255.hex"
+   text	   data	    bss	    dec	    hex	filename
+   1416	     12	   1572	   3000	    bb8	A8255.elf
+Finished building: default.size.stdout
+ 
+Finished building: A8255.hex
+Finished building: A8255.list
+ 
+ 
+
+23:18:37 Build Finished. 0 errors, 1 warnings. (took 657ms)
+

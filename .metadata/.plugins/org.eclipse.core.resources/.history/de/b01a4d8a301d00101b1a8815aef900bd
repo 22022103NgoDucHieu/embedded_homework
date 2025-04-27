@@ -1,0 +1,178 @@
+//#include "stm32f4xx.h"
+//#include <stdint.h>
+//
+//// Hàm khởi tạo GPIOA để điều khiển LED
+//void LED_Init(void) {
+//    RCC->AHB1ENR |= 1 << 0;  // Bật clock cho GPIOA (bit 0 của AHB1ENR)
+//    GPIOA->MODER |= (1 << (5 * 2));    // Đặt PA5 là Output (MODER5 = 01)
+//    GPIOA->MODER &= ~(1 << (5 * 2 + 1));  // Đảm bảo chỉ bit 10 của PA5 là 1 (chế độ output)
+//}
+//
+//// Hàm khởi tạo Timer2
+//void Timer2_Init(void) {
+//    RCC->APB1ENR |= (1 << 0);   // Bật clock cho Timer 2 (TIM2)
+//
+//    TIM2->PSC = 15999;   // Đặt giá trị chia tần số (Prescaler) là 15999
+//    // -> F_Timer = 16MHz / (15999 + 1) = 1 kHz (1 tick = 1 ms)
+//
+//    TIM2->ARR = 1999;    // Đặt giá trị đếm tự động (Auto-Reload)
+//    // -> Chu kỳ ngắt: (1999 + 1) / 1000 Hz = 2s
+//
+//    TIM2->DIER |= (1 << 0);  // Bật ngắt khi bộ đếm tràn (UIE = 1)
+//    TIM2->CR1 |= (1 << 0);   // Bật Timer (CEN = 1)
+//
+//    NVIC_EnableIRQ(TIM2_IRQn);   // Cho phép ngắt Timer2 trong NVIC
+//    NVIC_SetPriority(TIM2_IRQn, 0);  // Đặt độ ưu tiên cao nhất cho ngắt Timer2
+//}
+//
+//// Hàm xử lý ngắt của Timer2
+//void TIM2_IRQHandler(void) {
+//    if (TIM2->SR & (1 << 0)) {  // Kiểm tra cờ ngắt tràn (Update Interrupt Flag)
+//        static uint8_t toggle = 0;  // Biến trạng thái bật/tắt LED
+//        toggle = !toggle;  // Đảo trạng thái LED
+//
+//        if (toggle) {
+//            GPIOA->ODR |= (1 << 5);   // Bật LED (PA5 = 1)
+//        } else {
+//            GPIOA->ODR &= ~(1 << 5);  // Tắt LED (PA5 = 0)
+//        }
+//
+//        TIM2->SR &= ~(1 << 0); // Xóa cờ ngắt để tránh lặp vô hạn
+//    }
+//}
+//
+//// Hàm main
+//int main(void) {
+//    LED_Init();
+//    Timer2_Init();
+//    while(1);    // Vòng lặp vô tận, chương trình chạy trong ngắt
+//}
+
+
+//#include "stm32f4xx.h"
+//#include <stdint.h>
+//
+//void init_GPIO(void) {
+//    RCC->AHB1ENR |= (1 << 0);         // Bật clock cho PORTA
+//
+//    GPIOA->MODER |= (1 << (5 * 2));   // PA5 output (LED)
+//    GPIOA->MODER &= ~(1 << (5 * 2 + 1));
+//}
+//
+//void init_TIM1(void) {
+//    RCC->APB2ENR |= (1 << 0);         // Bật clock cho TIM1
+//
+//    TIM1->PSC = 15999;                   // Prescaler: 16 MHz / (15 + 1) = 1 MHz
+//    TIM1->ARR = 3999;                  // Chu kỳ: 1 MHz / (999 + 1) = 1 kHz (1 ms)
+//    TIM1->CR1 |= (1 << 4);            // Chế độ downcounter (DIR = 1)
+//
+//    // Cấu hình kênh 1 (CCR1) cho Capture/Compare
+//    TIM1->CCMR1 |= (0 << 0);          // Chế độ Compare (Output Compare, không output)
+//    TIM1->CCER |= (1 << 0);           // Bật kênh 1
+//    TIM1->CCR1 = 1999;                 // 500 ms (bật LED tại đây)
+//
+//    TIM1->DIER |= (1 << 0);           // Bật ngắt Update
+//    TIM1->DIER |= (1 << 1);           // Bật ngắt Capture/Compare kênh 1
+//    TIM1->CR1 |= (1 << 0);            // Bật Timer
+//
+//    NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn); // Bật ngắt Update
+//    NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 0); // Ưu tiên 0
+//    NVIC_EnableIRQ(TIM1_CC_IRQn);      // Bật ngắt Capture/Compare
+//    NVIC_SetPriority(TIM1_CC_IRQn, 0); // Ưu tiên 0
+//}
+//
+//void TIM1_UP_TIM10_IRQHandler(void) {
+//    if (TIM1->SR & (1 << 0)) {        // Ngắt Update (CNT = 0, sau 1000 ms)
+//        GPIOA->ODR &= ~(1 << 5);      // Tắt LED PA5
+//        TIM1->SR &= ~(1 << 0);        // Xóa cờ ngắt Update
+//    }
+//}
+//
+//void TIM1_CC_IRQHandler(void) {
+//    if (TIM1->SR & (1 << 1)) {        // Ngắt Capture/Compare (CNT = CCR1, tại 500 ms)
+//        GPIOA->ODR |= (1 << 5);       // Bật LED PA5
+//        TIM1->SR &= ~(1 << 1);        // Xóa cờ ngắt Capture/Compare
+//    }
+//}
+//
+//int main(void) {
+//    init_GPIO();
+//    init_TIM1();
+//
+//    while (1) {
+//        // Không cần làm gì trong main, mọi thứ được xử lý trong ngắt
+//    }
+//}
+
+
+#include "stm32f4xx.h"
+
+volatile uint32_t count1 = 0;
+volatile uint32_t count2 = 0;
+volatile uint32_t count4 = 0;
+
+void GPIO_Init(void) {
+    // Enable clock for GPIOA, GPIOB, GPIOC
+    RCC->AHB1ENR |= (1 << 0); // GPIOA
+    RCC->AHB1ENR |= (1 << 1); // GPIOB
+    RCC->AHB1ENR |= (1 << 2); // GPIOC
+
+    // Set PA5, PB6, PC7 as output
+    GPIOA->MODER &= ~(3 << (5 * 2));
+    GPIOA->MODER |=  (1 << (5 * 2)); // PA5 output
+
+    GPIOB->MODER &= ~(3 << (6 * 2));
+    GPIOB->MODER |=  (1 << (6 * 2)); // PB6 output
+
+    GPIOC->MODER &= ~(3 << (7 * 2));
+    GPIOC->MODER |=  (1 << (7 * 2)); // PC7 output
+}
+
+void Timer2_Init(void) {
+    // Enable clock for TIM2
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+
+    // Set prescaler and auto-reload
+    TIM2->PSC = 16000 - 1; // Prescaler → 1ms tick (16MHz / 16000 = 1kHz)
+    TIM2->ARR = 1 - 1;     // Auto-reload = 1ms
+
+    TIM2->DIER |= TIM_DIER_UIE; // Enable update interrupt
+    TIM2->CR1  |= TIM_CR1_CEN;  // Enable timer
+
+    // Enable TIM2 interrupt in NVIC
+    NVIC_EnableIRQ(TIM2_IRQn);
+}
+
+void TIM2_IRQHandler(void) {
+    if (TIM2->SR & TIM_SR_UIF) { // Check update interrupt flag
+        TIM2->SR &= ~TIM_SR_UIF; // Clear flag
+
+        count1++;
+        count2++;
+        count4++;
+
+        if (count1 >= 1000) { // 1s
+            GPIOA->ODR ^= (1 << 5);
+            count1 = 0;
+        }
+
+        if (count2 >= 2000) { // 2s
+            GPIOB->ODR ^= (1 << 6);
+            count2 = 0;
+        }
+
+        if (count4 >= 4000) { // 4s
+            GPIOC->ODR ^= (1 << 7);
+            count4 = 0;
+        }
+    }
+}
+
+int main(void) {
+    GPIO_Init();
+    Timer2_Init();
+
+    while (1) {
+        // Main loop empty - LED control done in interrupt
+    }
+}

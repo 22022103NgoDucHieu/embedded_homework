@@ -1,0 +1,6 @@
+../Core/Src/main.c:309:6:delay_ms	2
+../Core/Src/main.c:314:6:GPIO_Init	1
+../Core/Src/main.c:331:6:UART2_Init	1
+../Core/Src/main.c:344:6:UART2_Transmit_char	2
+../Core/Src/main.c:350:6:UART2_Transmit_string	2
+../Core/Src/main.c:356:5:main	1

@@ -1,0 +1,19 @@
+16:14:07 **** Incremental Build of configuration Debug for project mode2_8255a ****
+make -j12 all 
+arm-none-eabi-gcc -o "mode2_8255a.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\nhapmonhethongnhung\lab\lab2_intro\mode2_8255a\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mode2_8255a.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: mode2_8255a.elf
+ 
+arm-none-eabi-size   mode2_8255a.elf 
+arm-none-eabi-objdump -h -S  mode2_8255a.elf  > "mode2_8255a.list"
+arm-none-eabi-objcopy  -O ihex  mode2_8255a.elf  "mode2_8255a.hex"
+   text	   data	    bss	    dec	    hex	filename
+   1608	     12	   1572	   3192	    c78	mode2_8255a.elf
+Finished building: default.size.stdout
+ 
+Finished building: mode2_8255a.list
+ 
+Finished building: mode2_8255a.hex
+ 
+
+16:14:08 Build Finished. 0 errors, 0 warnings. (took 961ms)
+

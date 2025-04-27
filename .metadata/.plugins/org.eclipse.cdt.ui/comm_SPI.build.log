@@ -1,0 +1,10 @@
+17:13:31 **** Incremental Build of configuration Debug for project comm_SPI ****
+make -j12 all 
+arm-none-eabi-size   comm_SPI.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1212	     12	   1572	   2796	    aec	comm_SPI.elf
+Finished building: default.size.stdout
+ 
+
+17:13:32 Build Finished. 0 errors, 0 warnings. (took 198ms)
+

@@ -1,0 +1,9 @@
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
+configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:DAC Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:GPIO Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:comm_SPI Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:interrupt Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:interrupt2 Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:UART_th Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:timer Debug
+eclipse.preferences.version=1
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:DAC\ Debug/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:DAC\ Debug/activeLaunchTarget=null\:---
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:GPIO\ Debug/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:GPIO\ Debug/activeLaunchTarget=null\:---

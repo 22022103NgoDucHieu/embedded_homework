@@ -1,0 +1,117 @@
+#include "main.h"
+
+#define ADC1_BASE 0x40012000
+#define RCC_BASE  0x40023800
+#define GPIOC_BASE 0x40020800
+#define GPIOA_BASE 0x40020000
+#define UART2_BASE 0x40004400
+
+// Định nghĩa các thanh ghi cần thiết
+#define ADC_CR2 (*(volatile uint32_t*)(ADC1_BASE + 0x08))
+#define ADC_SMPR2 (*(volatile uint32_t*)(ADC1_BASE + 0x0C))
+#define ADC_SQR3 (*(volatile uint32_t*)(ADC1_BASE + 0x34))
+#define ADC_DR (*(volatile uint32_t*)(ADC1_BASE + 0x4C))
+
+#define RCC_AHB1ENR (*(volatile uint32_t*)(RCC_BASE + 0x30))
+#define RCC_APB1ENR (*(volatile uint32_t*)(RCC_BASE + 0x40))
+#define GPIOC_MODER (*(volatile uint32_t*)(GPIOC_BASE + 0x00))
+#define GPIOA_MODER (*(volatile uint32_t*)(GPIOA_BASE + 0x00))
+#define GPIOA_AFRH (*(volatile uint32_t*)(GPIOA_BASE + 0x24))
+#define GPIOA_BSRR (*(volatile uint32_t*)(GPIOA_BASE + 0x18))
+
+#define USART2_SR (*(volatile uint32_t*)(UART2_BASE + 0x00))
+#define USART2_DR (*(volatile uint32_t*)(UART2_BASE + 0x04))
+#define USART2_BRR (*(volatile uint32_t*)(UART2_BASE + 0x08))
+#define USART2_CR1 (*(volatile uint32_t*)(UART2_BASE + 0x0C))
+
+// Các hằng số cấu hình
+#define UART_BAUD_RATE 115200
+
+void SystemClock_Config(void);
+void Error_Handler(void);
+void UART2_Init(void);
+void UART2_Send(char* str);
+uint32_t ADC_Read(void);
+
+int main(void)
+{
+    // Bước 1: Kích hoạt đồng hồ cho GPIOA, GPIOC và UART2
+    RCC_AHB1ENR |= (1 << 2);  // Kích hoạt đồng hồ cho GPIOC
+    RCC_AHB1ENR |= (1 << 0);  // Kích hoạt đồng hồ cho GPIOA
+    RCC_APB1ENR |= (1 << 17); // Kích hoạt đồng hồ cho UART2
+
+    // Bước 2: Cấu hình chân PC1 (ADC input)
+    GPIOC_MODER |= (3 << 2);  // PC1 ở chế độ analog (00: chế độ analog)
+
+    // Bước 3: Cấu hình UART2 (PA2 là TX, PA3 là RX)
+    GPIOA_MODER |= (2 << 4);  // PA2 (TX) là chế độ Alternate Function (AF)
+    GPIOA_AFRH |= (7 << 8);   // PA2 (TX) sử dụng AF7 (USART2_TX)
+    GPIOA_MODER |= (2 << 6);  // PA3 (RX) là chế độ Alternate Function (AF)
+    GPIOA_AFRH |= (7 << 12);  // PA3 (RX) sử dụng AF7 (USART2_RX)
+
+    // Bước 4: Cấu hình UART2
+    UART2_Init();
+
+    // Bước 5: Cấu hình ADC (chuẩn bị các thanh ghi)
+    ADC_SMPR2 |= (7 << 3);    // 3 cycles cho ADC_CHANNEL_11 (PC1)
+    ADC_SQR3 = (11);          // ADC_CHANNEL_11 (PC1) là kênh đầu vào
+    ADC_CR2 |= (1 << 0);      // Kích hoạt ADC
+
+    // Bước 6: Vòng lặp chính
+    while (1) {
+        // Bắt đầu chuyển đổi ADC
+        ADC_CR2 |= (1 << 30);  // Kích hoạt bắt đầu chuyển đổi (SWSTART)
+
+        // Chờ chuyển đổi hoàn tất
+        while (!(ADC_CR2 & (1 << 1)));  // Kiểm tra EOC (End of Conversion)
+
+        // Đọc giá trị ADC
+        uint32_t adc_value = ADC_DR;
+
+        // Chuyển giá trị ADC thành chuỗi và gửi qua UART
+        char buffer[10];
+        snprintf(buffer, sizeof(buffer), "ADC Value: %lu\r\n", adc_value);
+        UART2_Send(buffer);
+    }
+}
+
+void UART2_Init(void) {
+    // Bật clock cho USART2
+    RCC_APB1ENR |= (1 << 17);
+
+    // Cấu hình Baud Rate = 115200, fCK = 16 MHz
+    USART2_BRR = (8 << 4) | 11; // DIV_Mantissa = 8, DIV_Fraction = 11
+
+    // Cấu hình USART2: 8 bits, 1 stop bit, no parity
+    USART2_CR1 = (1 << 13) | // Bật USART
+                 (1 << 3);   // Bật TX
+}
+
+void UART2_Send(char* str)
+{
+    while (*str) {
+        // Chờ khi UART2 sẵn sàng gửi
+        while (!(USART2_SR & (1 << 7)));  // Kiểm tra TXE (Transmit Data Register Empty)
+        USART2_DR = (*str++);  // Gửi dữ liệu
+    }
+}
+
+uint32_t ADC_Read(void)
+{
+    // Bắt đầu chuyển đổi ADC và chờ kết quả
+    ADC_CR2 |= (1 << 30);  // Kích hoạt bắt đầu chuyển đổi (SWSTART)
+    while (!(ADC_CR2 & (1 << 1)));  // Kiểm tra EOC (End of Conversion)
+    return ADC_DR;  // Trả về giá trị ADC đã chuyển đổi
+}
+
+void SystemClock_Config(void)
+{
+    // Cấu hình đồng hồ hệ thống nếu cần thiết
+}
+
+void Error_Handler(void)
+{
+    // Xử lý lỗi nếu có
+    while (1) {
+    }
+}
